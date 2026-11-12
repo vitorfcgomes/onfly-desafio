@@ -1,11 +1,23 @@
+
 """Conversão de valores para BRL."""
 
 from __future__ import annotations
 
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
+
+MONEY_QUANTUM = Decimal("0.01")
 
 
-def convert_to_brl(amount: Decimal, currency: str, rates: dict[str, Decimal]) -> Decimal:
-    """Converte um valor na moeda informada para BRL usando a taxa da tabela."""
+def convert_to_brl(
+    amount: Decimal,
+    currency: str,
+    rates: dict[str, Decimal],
+) -> Decimal:
+    """Converte e arredonda o valor para centavos."""
     rate = rates[currency]
-    return Decimal(str(amount * rate))
+    converted = amount * rate
+
+    return converted.quantize(
+        MONEY_QUANTUM,
+        rounding=ROUND_HALF_UP,
+    )
